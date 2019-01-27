@@ -1,16 +1,15 @@
 <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
 <title>Hello Vue.js</title>
 <script src="https://unpkg.com/vue@2.5.17"></script>
-<div id="app">
-  {{message}}
-</div>
-<script>
-// ロードされ、Vueがグローバル変数として定義されているか確認
-  console.assert(typeof Vue !== 'undefined');
-  new Vue({
-    el: '#app',
-    data: {
-      message: 'こんにちは！Vue.js',
-    }
-  });
-</script>
+</head>
+<body>
+  <div id="app">
+    <p>{{ items[0].name }}: {{ items[0].price }} x {{ items[0].quantity }}</p>
+    <p>フィルタ処理例 {{ 1000 | numberWithDelimiter }}
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

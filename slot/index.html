@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>slot Vue.js</title>
+<script src="https://unpkg.com/vue@2.5.17"></script>
+</head>
+<body>
+  <div id="app">
+    <page-header>
+      <h1 slot="header">フルーツ一覧</h1>
+    </page-header>
+    <ul>
+      <li v-for="fruit in fruits">
+        {{fruit}}
+      </li>
+    </ul>
+  </div>
+  <script>
+    Vue.component('page-header', {
+      template: `
+        <div style="color: blue">
+          <slot name="header">親から何も渡って来ない場合、この文が表示される</slot>
+        </div>
+      `
+    })
+
+    new Vue({
+      el: '#app',
+      data: {
+        fruits: [
+          'リンゴ',
+          'イチゴ',
+          'オレンジ',
+        ]
+      }
+    })
+  </script>
+</body>
+</html>

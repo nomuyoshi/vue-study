@@ -21,6 +21,16 @@ var vm = new Vue({
   data: {
     items: items,
   },
+  computed: {
+    totalPrice: function() {
+      return this.items.reduce(function(sum, item) {
+        return sum + (item.price * item.quantity)
+      }, 0)
+    },
+    totalPriceWithTax: function() {
+      return Math.floor(this.totalPrice * 1.08)
+    }
+  },
   filters: {
     numberWithDelimiter: function(value) {
       if (!value) {

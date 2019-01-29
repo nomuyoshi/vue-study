@@ -2,56 +2,42 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Hello Vue Router</title>
+<title>SPAのサンプル</title>
 </head>
 <body>
   <div id="app">
     <router-link to="/top">トップページ</router-link>
     <router-link to="/users">ユーザー一覧</router-link>
-    <router-link :to="{ name: 'user', params: { userId: 123 } }">ユーザー詳細</router-link>
     <router-view></router-view>
   </div>
   <script src="https://unpkg.com/vue@2.5.17"></script>
   <script src="https://unpkg.com/vue-router@3.0.1"></script>
+  <script type="text/x-template" id="user-list">
+    <div> ユーザー一覧ページです。</div>
+  </script>
   <script>
+    var UserList = {
+      template: '#user-list',
+    }
+
     var router = new VueRouter({
       routes: [
         {
           path: '/top',
           component: {
-            template: '<div>トップページ！！</div>',
+            template: '<div>トップ</div>'
           },
         },
         {
           path: '/users',
-          component: {
-            template: '<div>ユーザー一覧</div>',
-          },
-        },
-        {
-          path: '/users/:userId',
-          name: 'user',
-          component: {
-            template: '<div>ユーザー詳細 userId: {{ $route.params.userId }}</div>',
-          },
-        },
+          component: UserList,
+        }
       ]
     })
-    // ルーターのインスタンスをrootとなるVueインスタンスに渡します
-    var app = new Vue({
-      router: router
-    }).$mount('#app')
 
-    // フック関数
-    router.beforeEach(function(to, from, next) {
-      // ユーザー一覧へアクセスしたらトップへリダイレクト
-      if (to.path === '/users') {
-        next('/top')
-      } else {
-        // nextを呼ばないと遷移が終わらない
-        next()
-      }
-    })
+    var app = new Vue({
+      router: router,
+    }).$mount('#app')
   </script>
 </body>
 </html>

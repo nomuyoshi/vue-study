@@ -8,6 +8,7 @@
   <div id="app">
     <router-link to="/top">トップページ</router-link>
     <router-link to="/users">ユーザー一覧</router-link>
+    <router-link to="/users/123">ユーザー詳細</router-link>
     <router-view></router-view>
   </div>
   <script src="https://unpkg.com/vue@2.5.17"></script>
@@ -25,6 +26,12 @@
           path: '/users',
           component: {
             template: '<div>ユーザー一覧</div>',
+          },
+        },
+        {
+          path: '/users/:userId',
+          component: {
+            template: '<div>ユーザー詳細 userId: {{ $route.params.userId }}</div>',
           },
         },
       ]

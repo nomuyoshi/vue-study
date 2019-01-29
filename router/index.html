@@ -21,19 +21,44 @@
       </div>
     </div>
   </script>
+
+  <script type="text/x-template" id="user-detail">
+    <div>
+      <div class="loading" v-if="loading">読み込み中...</div> <div v-if="error" class="error">
+        {{ error }}
+      </div>
+      <div v-if="user">
+        <h2>{{ user.name }}</h2>
+          <p>{{ user.description }}</p>
+        </div>
+      </div>
+    </div>
+  </script>
   <script>
+    var userData = [
+      {
+        id: 1,
+        name: 'NomuYoshi',
+        description: '物腰やわらかいエンジニアです',
+      },
+      {
+        id: 2,
+        name: 'NoSaki',
+        description: 'プライドが高いOLです',
+      },
+    ]
     var getUsers = function(callback) {
       setTimeout(function() {
-        callback(null, [
-          {
-            id: 1,
-            name: 'NomuYoshi',
-          },
-          {
-            id: 2,
-            name: 'NoSaki',
-          }
-        ])
+        callback(null, userData)
+      }, 1000)
+    }
+
+    var getUser = function (userId, callback) {
+      setTimeout(function () {
+        var filteredUsers = userData.filter(function (user) {
+          return user.id === parseInt(userId, 10)
+        })
+        callback(null, filteredUsers && filteredUsers[0])
       }, 1000)
     }
 
@@ -68,6 +93,37 @@
       }
     }
 
+    var UserDetail = {
+      template: '#user-detail',
+      data: function() {
+        return {
+          loading: false,
+          user: null,
+          error: null,
+        }
+      },
+      created: function() {
+        this.fetchData()
+      },
+      watch: {
+        '$route': 'fetchData'
+      },
+      methods: {
+        fetchData: function() {
+          this.loading = true
+          // $route.paramsでURLのパラメータを取得
+          getUser(this.$route.params.userId, (function (err, user) {
+            this.loading = false
+            if (err) {
+              this.error = err.toString()
+            } else {
+              this.user = user
+            }
+          }).bind(this))
+        }
+      }
+    }
+
     var router = new VueRouter({
       routes: [
         {
@@ -79,7 +135,11 @@
         {
           path: '/users',
           component: UserList,
-        }
+        },
+        {
+          path: '/users/:userId',
+          component: UserDetail,
+        },
       ]
     })
 

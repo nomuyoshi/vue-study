@@ -34,6 +34,25 @@
       </div>
     </div>
   </script>
+  <script type="text/x-template" id="user-create">
+    <div>
+      <div class="sending" v-if="sending">送信中...</div>
+      <div>
+        <h2>新規ユーザー登録</h2>
+        <div>
+          <label>名前: </label>
+          <input type="text" v-model="user.name">
+        </div>
+        <div>
+          <label>説明文: </label>
+          <textarea v-model="user.description"></textarea>
+        </div>
+        <div v-if="error" class="error">{{ error }}</div>
+        <input type="button" @click="createUser" value="送信">
+      </div>
+    </div>
+  </script>
+
   <script>
     var userData = [
       {
@@ -53,12 +72,20 @@
       }, 1000)
     }
 
-    var getUser = function (userId, callback) {
+    var getUser = function(userId, callback) {
       setTimeout(function () {
         var filteredUsers = userData.filter(function (user) {
           return user.id === parseInt(userId, 10)
         })
         callback(null, filteredUsers && filteredUsers[0])
+      }, 1000)
+    }
+
+    var postUser = function(params, callback) {
+      setTimeout(function () {
+        params.id = userData.length + 1
+        userData.push(params)
+        callback(null, params)
       }, 1000)
     }
 
@@ -124,6 +151,48 @@
       }
     }
 
+    var UserCreate = {
+      template: '#user-create',
+      data: function() {
+        return {
+          sending: false,
+          user: this.defaultUser(),
+          error: null,
+        }
+      },
+      methods: {
+        defaultUser: function() {
+          return {
+            name: '',
+            description: '',
+          }
+        },
+        createUser: function() {
+          if (this.user.name.trim() === '') {
+            this.error = '名前は必須です'
+            return
+          }
+
+          if (this.user.description.trim() === '') {
+            this.error = '説明文は必須です'
+            return
+          }
+
+          postUser(this.user, (function (err, user) {
+            this.sending = false
+            if (err) {
+              this.error = err.toString()
+            } else {
+              this.error = null
+              this.user = this.defaultUser()
+              alert('新規ユーザー登録完了')
+              this.$router.push('/users')
+            }
+          }).bind(this))
+        },
+      }
+    }
+
     var router = new VueRouter({
       routes: [
         {
@@ -135,6 +204,10 @@
         {
           path: '/users',
           component: UserList,
+        },
+        {
+          path: '/users/new',
+          component: UserCreate,
         },
         {
           path: '/users/:userId',

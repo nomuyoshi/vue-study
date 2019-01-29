@@ -13,11 +13,59 @@
   <script src="https://unpkg.com/vue@2.5.17"></script>
   <script src="https://unpkg.com/vue-router@3.0.1"></script>
   <script type="text/x-template" id="user-list">
-    <div> ユーザー一覧ページです。</div>
+    <div>
+      <div v-if="loading" class="loading">読み込み中...</div>
+      <div v-if="error" class="error">{{ error }}</div>
+      <div v-for="user in users" :key="user.id">
+        <h2>{{ user.name }}</h2>
+      </div>
+    </div>
   </script>
   <script>
+    var getUsers = function(callback) {
+      setTimeout(function() {
+        callback(null, [
+          {
+            id: 1,
+            name: 'NomuYoshi',
+          },
+          {
+            id: 2,
+            name: 'NoSaki',
+          }
+        ])
+      }, 1000)
+    }
+
     var UserList = {
       template: '#user-list',
+      data: function() {
+        return {
+          loading: false,
+          users: function() { return [] },
+          error: null,
+        }
+      },
+      created: function() {
+        this.fetchData()
+      },
+      // $routeをwatchすることで、ルーティング変更時に関数を実行できる
+      watch: {
+        '$route': 'fetchData'
+      },
+      methods: {
+        fetchData: function() {
+          this.loading = true
+          getUsers((function(err, users) {
+            this.loading = false
+            if (err) {
+              this.error = err
+            } else {
+              this.users = users
+            }
+          }).bind(this))
+        }
+      }
     }
 
     var router = new VueRouter({

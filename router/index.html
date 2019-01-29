@@ -301,6 +301,11 @@
             Auth.logout()
             next('/')
           }
+        },
+        {
+          // 定義されていないURLの場合、topに飛ばす
+          path: '*',
+          redirect: '/top'
         }
       ]
     })

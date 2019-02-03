@@ -17,6 +17,23 @@ const store = new Vuex.Store({
         done: true,
       }
     ],
+    nextTaskId: 3,
+  },
+  mutations: {
+    addTask(state, { name }) {
+      state.tasks.push({
+        id: state.nextTaskId,
+        name,
+        done: false,
+      })
+
+      // IDを1つ進める
+      state.nextTaskId++
+    },
+    toggleTaskStatus(state, { id }) {
+      const task = state.tasks.find(t => t.id === id)
+      task.done = !task.done
+    },
   },
 })
 
